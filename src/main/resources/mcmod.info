@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "simplecommands",
+    "name": "Simple Commands",
+    "description": "A server side forge mod to add simple useful commands",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "jtljac"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
