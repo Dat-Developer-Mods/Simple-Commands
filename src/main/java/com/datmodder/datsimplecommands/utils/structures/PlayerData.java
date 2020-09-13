@@ -7,9 +7,15 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerData {
-    public HashMap<String, Location> homeLocation = new HashMap<>();
+    public HashMap<String, Location> homeLocations = new HashMap<>();
     transient public Location backLocation = null;
     transient public HashMap<UUID, TPDirection> tpaRequests = new HashMap<>();
+    transient public long lastTeleport = 0L;
 
     PlayerData(){}
+
+    public void addHome(String HomeName, Location HomeLocation) {
+        homeLocations.put(HomeName, HomeLocation);
+
+    }
 }

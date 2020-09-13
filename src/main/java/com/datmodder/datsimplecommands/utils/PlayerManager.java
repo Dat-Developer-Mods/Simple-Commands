@@ -18,5 +18,17 @@ public class PlayerManager {
         return INSTANCE;
     }
 
+    public PlayerData getPlayer(UUID PlayerID) {
+        return players.get(PlayerID);
+    }
 
+    // TODO: Finish
+
+    public void savePlayer(UUID PlayerID) {
+
+    }
+
+    public void loadPlayer(UUID PlayerID) {
+
+    }
 }

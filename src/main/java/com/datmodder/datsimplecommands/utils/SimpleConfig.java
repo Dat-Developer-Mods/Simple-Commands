@@ -8,11 +8,16 @@ import net.minecraftforge.common.config.ConfigManager;
 public class SimpleConfig {
     public static TeleportationConfig TELEPORTATION = new TeleportationConfig();
 
-    private static class TeleportationConfig {
+    public static class TeleportationConfig {
         @Config.Name("Teleportation Delay")
         @Config.Comment("How long the player must wait after typing the command before they can teleport")
         @Config.RangeInt(min=0)
         public int teleportationDelay = 5;
+
+        @Config.Name("Teleportation Cooldown")
+        @Config.Comment("How long the player must wait after teleporting before they can teleport again")
+        @Config.RangeInt(min=0)
+        public int teleportationCoolDown = 5;
     }
 
 
