@@ -12,7 +12,7 @@ public class PlayerData {
     transient public HashMap<UUID, TPDirection> tpaRequests = new HashMap<>();
     transient public long lastTeleport = 0L;
 
-    PlayerData(){}
+    public PlayerData(){}
 
     public void addHome(String HomeName, Location HomeLocation) {
         homeLocations.put(HomeName, HomeLocation);

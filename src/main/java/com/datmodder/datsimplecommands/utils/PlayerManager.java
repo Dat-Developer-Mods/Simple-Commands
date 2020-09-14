@@ -18,14 +18,27 @@ public class PlayerManager {
         return INSTANCE;
     }
 
+    public PlayerData newPlayer(UUID PlayerID) {
+        PlayerData player = new PlayerData();
+
+        players.put(PlayerID, player);
+
+        savePlayer(PlayerID, player);
+        return player;
+    }
+
     public PlayerData getPlayer(UUID PlayerID) {
         return players.get(PlayerID);
     }
 
     // TODO: Finish
 
-    public void savePlayer(UUID PlayerID) {
+    public void savePlayer(UUID PlayerID, PlayerData Player) {
 
+    }
+
+    public void savePlayer(UUID PlayerID) {
+        savePlayer(PlayerID, players.get(PlayerID));
     }
 
     public void loadPlayer(UUID PlayerID) {

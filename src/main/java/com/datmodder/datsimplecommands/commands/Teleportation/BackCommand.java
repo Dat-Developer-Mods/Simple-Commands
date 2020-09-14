@@ -8,7 +8,6 @@ import com.demmodders.datmoddingapi.delayedexecution.DelayHandler;
 import com.demmodders.datmoddingapi.delayedexecution.delayedevents.DelayedTeleportEvent;
 import com.demmodders.datmoddingapi.util.DemConstants;
 import com.demmodders.datmoddingapi.util.Permissions;
-import jdk.internal.jline.internal.Nullable;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -17,6 +16,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BackCommand extends CommandBase {
@@ -63,8 +64,13 @@ public class BackCommand extends CommandBase {
     }
 
     @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return true;
+    }
+
+    @Override
     public List<String> getAliases() {
-        List<String> aliases = super.getAliases();
+        List<String> aliases = new ArrayList<>();
         aliases.add("back");
         return aliases;
     }
