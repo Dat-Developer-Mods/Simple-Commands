@@ -1,11 +1,10 @@
 package com.datmodder.datsimplecommands.commands.Teleportation;
 
-import com.datmodder.datsimplecommands.delayedevents.DelayedTeleport;
+import com.datmodder.datsimplecommands.delayedevents.teleportation.DelayedTeleport;
 import com.datmodder.datsimplecommands.utils.PlayerManager;
 import com.datmodder.datsimplecommands.utils.SimpleConfig;
 import com.datmodder.datsimplecommands.utils.structures.PlayerData;
 import com.demmodders.datmoddingapi.delayedexecution.DelayHandler;
-import com.demmodders.datmoddingapi.structures.Location;
 import com.demmodders.datmoddingapi.util.DemConstants;
 import com.demmodders.datmoddingapi.util.Permissions;
 import net.minecraft.command.CommandBase;
@@ -18,7 +17,6 @@ import net.minecraft.util.text.TextComponentString;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HomeCommand extends CommandBase {
@@ -37,12 +35,12 @@ public class HomeCommand extends CommandBase {
         String message = "";
         if (sender instanceof EntityPlayerMP) {
             String homeName = (args.length > 0 ? args[0].toLowerCase() : "default");
-            if (Permissions.checkPermission(sender, "datsimplecommands.teleportation.homemultiple", getRequiredPermissionLevel()) || (homeName.equals("default") && Permissions.checkPermission(sender, "datsimplecommands.teleportation.home", getRequiredPermissionLevel()))) {
+            if (Permissions.checkPermission(sender, "datsimplecommands.teleportation.homemultiple", 2) || (homeName.equals("default") && Permissions.checkPermission(sender, "datsimplecommands.teleportation.home", getRequiredPermissionLevel()))) {
                 PlayerData player = PlayerManager.getInstance().getPlayer(((EntityPlayerMP) sender).getUniqueID());
 
                 if (player.homeLocations.containsKey(homeName)) {
                     DelayHandler.addEvent(new DelayedTeleport(player.homeLocations.get(homeName), (EntityPlayerMP) sender, SimpleConfig.TELEPORTATION.teleportationDelay));
-                    message = DemConstants.TextColour.INFO + "Teleporting to your last location in " + SimpleConfig.TELEPORTATION.teleportationDelay + " seconds";
+                    message = DemConstants.TextColour.INFO + "Teleporting to your home in " + SimpleConfig.TELEPORTATION.teleportationDelay + " seconds";
                 } else {
                     message = DemConstants.TextColour.ERROR + (homeName.equals("default") ? "You do not have a home" : "That home doesn't exist");
                 }

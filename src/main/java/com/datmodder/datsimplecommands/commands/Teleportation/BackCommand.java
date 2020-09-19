@@ -1,11 +1,10 @@
 package com.datmodder.datsimplecommands.commands.Teleportation;
 
-import com.datmodder.datsimplecommands.delayedevents.DelayedTeleport;
+import com.datmodder.datsimplecommands.delayedevents.teleportation.DelayedTeleport;
 import com.datmodder.datsimplecommands.utils.PlayerManager;
 import com.datmodder.datsimplecommands.utils.SimpleConfig;
 import com.datmodder.datsimplecommands.utils.structures.PlayerData;
 import com.demmodders.datmoddingapi.delayedexecution.DelayHandler;
-import com.demmodders.datmoddingapi.delayedexecution.delayedevents.DelayedTeleportEvent;
 import com.demmodders.datmoddingapi.util.DemConstants;
 import com.demmodders.datmoddingapi.util.Permissions;
 import net.minecraft.command.CommandBase;

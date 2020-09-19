@@ -1,4 +1,4 @@
-package com.datmodder.datsimplecommands.delayedevents;
+package com.datmodder.datsimplecommands.delayedevents.teleportation;
 
 import com.datmodder.datsimplecommands.utils.PlayerManager;
 import com.demmodders.datmoddingapi.delayedexecution.delayedevents.DelayedTeleportEvent;
