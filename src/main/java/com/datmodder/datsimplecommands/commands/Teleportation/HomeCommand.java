@@ -79,6 +79,6 @@ public class HomeCommand extends CommandBase {
         } else {
             possibilities = super.getTabCompletions(server, sender, args, targetPos);
         }
-        return possibilities;
+        return getListOfStringsMatchingLastWord(args, possibilities);
     }
 }

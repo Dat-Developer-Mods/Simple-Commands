@@ -34,7 +34,7 @@ public class TPDenyCommand extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         String message = "";
         if (sender instanceof EntityPlayerMP) {
-            if (Permissions.checkPermission(sender, "datsimplecommands.teleportation.tpadeny", getRequiredPermissionLevel())) {
+            if (Permissions.checkPermission(sender, "datsimplecommands.teleportation.tpdeny", getRequiredPermissionLevel())) {
                 UUID senderID = ((EntityPlayerMP) sender).getUniqueID();
                 PlayerData player = PlayerManager.getInstance().getPlayer(senderID);
                 if (args.length > 0) {
@@ -103,6 +103,6 @@ public class TPDenyCommand extends CommandBase {
         } else {
             possibilities = super.getTabCompletions(server, sender, args, targetPos);
         }
-        return possibilities;
+        return getListOfStringsMatchingLastWord(args, possibilities);
     }
 }

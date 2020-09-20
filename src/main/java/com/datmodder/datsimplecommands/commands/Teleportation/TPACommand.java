@@ -90,10 +90,11 @@ public class TPACommand extends CommandBase {
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         List<String> possibilities;
         if (args.length == 1) {
-            possibilities = Arrays.asList(server.getOnlinePlayerNames());
+            possibilities = new ArrayList<>(Arrays.asList(server.getOnlinePlayerNames()));
+            possibilities.remove(sender.getName());
         } else {
             possibilities = super.getTabCompletions(server, sender, args, targetPos);
         }
-        return possibilities;
+        return getListOfStringsMatchingLastWord(args, possibilities);
     }
 }

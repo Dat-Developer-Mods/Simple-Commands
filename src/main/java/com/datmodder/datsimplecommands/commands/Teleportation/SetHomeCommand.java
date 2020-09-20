@@ -38,8 +38,7 @@ public class SetHomeCommand extends CommandBase {
                 PlayerData player = PlayerManager.getInstance().getPlayer(playerID);
                 if (homeName.equals("default") || (player.homeLocations.containsKey(homeName) || (Permissions.checkPermission(sender, "datsimplecommands.teleportation.homemultiple", 2) && (player.homeLocations.size() < SimpleConfig.TELEPORTATION.maxHomes)))) {
                     EntityPlayerMP entityPlayerMP = (EntityPlayerMP) sender;
-                    player.homeLocations.put(homeName, new Location(entityPlayerMP.dimension, entityPlayerMP.posX, entityPlayerMP.posY, entityPlayerMP.posZ, entityPlayerMP.cameraPitch, entityPlayerMP.cameraYaw));
-                    PlayerManager.getInstance().savePlayer(playerID);
+                    PlayerManager.getInstance().addPlayerHome(playerID, homeName, new Location(entityPlayerMP.dimension, entityPlayerMP.posX, entityPlayerMP.posY, entityPlayerMP.posZ, entityPlayerMP.cameraPitch, entityPlayerMP.cameraYaw));
 
                     message = DemConstants.TextColour.INFO + "Set your home to your location";
                 } else {

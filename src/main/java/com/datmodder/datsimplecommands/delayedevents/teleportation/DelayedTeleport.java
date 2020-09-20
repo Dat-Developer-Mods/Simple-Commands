@@ -14,7 +14,7 @@ public class DelayedTeleport extends DelayedTeleportEvent {
 
     @Override
     public void execute() {
-        PlayerManager.getInstance().getPlayer(player.getUniqueID()).backLocation = new Location(player.dimension, player.posX, player.posY, player.posZ, player.cameraPitch, player.cameraYaw);
+        PlayerManager.getInstance().updatePlayerBackLocation(player.getUniqueID(), new Location(player.dimension, player.posX, player.posY, player.posZ, player.rotationPitch, player.rotationYaw));
         player.sendMessage(new TextComponentString(DemConstants.TextColour.INFO + "Teleporting"));
         super.execute();
     }

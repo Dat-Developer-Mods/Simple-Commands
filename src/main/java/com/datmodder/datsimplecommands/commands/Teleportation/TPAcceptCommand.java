@@ -1,20 +1,17 @@
 package com.datmodder.datsimplecommands.commands.Teleportation;
 
-import com.datmodder.datsimplecommands.delayedevents.teleportation.TeleportRequest;
+import com.datmodder.datsimplecommands.delayedevents.teleportation.DelayedTeleport;
 import com.datmodder.datsimplecommands.utils.PlayerManager;
 import com.datmodder.datsimplecommands.utils.SimpleConfig;
 import com.datmodder.datsimplecommands.utils.enums.TPDirection;
 import com.datmodder.datsimplecommands.utils.structures.PlayerData;
 import com.demmodders.datmoddingapi.delayedexecution.DelayHandler;
-import com.demmodders.datmoddingapi.delayedexecution.delayedevents.DelayedTeleportEvent;
 import com.demmodders.datmoddingapi.structures.Location;
-import com.demmodders.datmoddingapi.util.DatTeleporter;
 import com.demmodders.datmoddingapi.util.DemConstants;
 import com.demmodders.datmoddingapi.util.Permissions;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
@@ -23,9 +20,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,7 +46,7 @@ public class TPAcceptCommand extends CommandBase {
             teleporter = Askee;
         }
 
-        DelayHandler.addEvent(new DelayedTeleportEvent(new Location(destination.dimension, destination.posX, destination.posY, destination.posZ, destination.cameraPitch, destination.cameraYaw), teleporter, SimpleConfig.TELEPORTATION.teleportationDelay));
+        DelayHandler.addEvent(new DelayedTeleport(new Location(destination.dimension, destination.posX, destination.posY, destination.posZ, destination.cameraPitch, destination.cameraYaw), teleporter, SimpleConfig.TELEPORTATION.teleportationDelay));
     }
 
     @Override
@@ -74,7 +69,7 @@ public class TPAcceptCommand extends CommandBase {
                                 message = DemConstants.TextColour.INFO + "Teleporting to " + otherPlayerEntity.getName() + " in " + SimpleConfig.TELEPORTATION.teleportationDelay + " seconds";
                                 otherPlayerMessage = sender.getName() + DemConstants.TextColour.INFO + " Accepted your teleport request";
                             } else {
-                                message = "Accepted Teleport request";
+                                message = DemConstants.TextColour.INFO +"Accepted Teleport request";
                                 otherPlayerMessage = DemConstants.TextColour.INFO + "Teleporting to " + sender.getName() + " in " + SimpleConfig.TELEPORTATION.teleportationDelay + " seconds";
                             }
                             otherPlayerEntity.sendMessage(new TextComponentString(otherPlayerMessage));
@@ -145,6 +140,6 @@ public class TPAcceptCommand extends CommandBase {
         } else {
             possibilities = super.getTabCompletions(server, sender, args, targetPos);
         }
-        return possibilities;
+        return getListOfStringsMatchingLastWord(args, possibilities);
     }
 }

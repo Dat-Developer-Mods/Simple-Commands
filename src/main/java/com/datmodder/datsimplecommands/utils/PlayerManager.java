@@ -1,7 +1,13 @@
 package com.datmodder.datsimplecommands.utils;
 
+import com.datmodder.datsimplecommands.SimpleCommands;
 import com.datmodder.datsimplecommands.utils.structures.PlayerData;
+import com.demmodders.datmoddingapi.structures.Location;
+import com.demmodders.datmoddingapi.util.FileHelper;
+import com.google.gson.Gson;
+import ibxm.Player;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -27,6 +33,16 @@ public class PlayerManager {
         return player;
     }
 
+    public void updatePlayerBackLocation(UUID PlayerID, Location BackLocation) {
+        getPlayer(PlayerID).backLocation = BackLocation;
+        savePlayer(PlayerID);
+    }
+
+    public void addPlayerHome(UUID PlayerID, String HomeName, Location HomeLocation) {
+        getPlayer(PlayerID).addHome(HomeName, HomeLocation);
+        savePlayer(PlayerID);
+    }
+
     public PlayerData getPlayer(UUID PlayerID) {
         return players.get(PlayerID);
     }
@@ -34,7 +50,15 @@ public class PlayerManager {
     // TODO: Finish
 
     public void savePlayer(UUID PlayerID, PlayerData Player) {
-
+        File playerFile = new File(FileHelper.getConfigSubDir(SimpleCommands.MOD_ID), PlayerID.toString() + ".json");
+        try {
+            Gson gson = new Gson();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile));
+            writer.write(gson.toJson(Player));
+            writer.close();
+        } catch (IOException e) {
+            // e.printStackTrace();
+        }
     }
 
     public void savePlayer(UUID PlayerID) {
@@ -42,6 +66,19 @@ public class PlayerManager {
     }
 
     public void loadPlayer(UUID PlayerID) {
-
+        File playerFile = new File(FileHelper.getConfigSubDir(SimpleCommands.MOD_ID), PlayerID.toString() + ".json");
+        PlayerData player;
+        if (playerFile.exists()) {
+            Gson gson = new Gson();
+            try (Reader jsonReader = new FileReader(playerFile)) {
+                player = gson.fromJson(jsonReader, PlayerData.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+                player = new PlayerData();
+            }
+        } else {
+            player = new PlayerData();
+        }
+        players.put(PlayerID, player);
     }
 }
