@@ -36,7 +36,7 @@ public class SetHomeCommand extends CommandBase {
             if (Permissions.checkPermission(sender, "datsimplecommands.teleportation.home", getRequiredPermissionLevel())) {
                 UUID playerID = ((EntityPlayerMP) sender).getUniqueID();
                 PlayerData player = PlayerManager.getInstance().getPlayer(playerID);
-                if (homeName.equals("default") || (player.homeLocations.containsKey(homeName) || (Permissions.checkPermission(sender, "datsimplecommands.teleportation.homemultiple", 2) && (player.homeLocations.size() < SimpleConfig.TELEPORTATION.maxHomes)))) {
+                if (homeName.equals("default") || (player.homeLocations.containsKey(homeName) || (Permissions.checkPermission(sender, "datsimplecommands.teleportation.homemultiple", 2) && (player.homeLocations.size() < SimpleConfig.TELEPORTATION.maxHomes - 1)))) {
                     EntityPlayerMP entityPlayerMP = (EntityPlayerMP) sender;
                     PlayerManager.getInstance().addPlayerHome(playerID, homeName, new Location(entityPlayerMP.dimension, entityPlayerMP.posX, entityPlayerMP.posY, entityPlayerMP.posZ, entityPlayerMP.cameraPitch, entityPlayerMP.cameraYaw));
 

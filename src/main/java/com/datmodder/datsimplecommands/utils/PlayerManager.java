@@ -56,6 +56,7 @@ public class PlayerManager {
             BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile));
             writer.write(gson.toJson(Player));
             writer.close();
+            SimpleCommands.LOGGER.info("Saved Player: " + PlayerID);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,12 +73,15 @@ public class PlayerManager {
             Gson gson = new Gson();
             try (Reader jsonReader = new FileReader(playerFile)) {
                 player = gson.fromJson(jsonReader, PlayerData.class);
+                SimpleCommands.LOGGER.info("Loaded PlayerFile for " + PlayerID);
             } catch (IOException e) {
                 e.printStackTrace();
                 player = new PlayerData();
+                SimpleCommands.LOGGER.info("Created new Player for " + PlayerID);
             }
         } else {
             player = new PlayerData();
+            SimpleCommands.LOGGER.info("Created new Player for " + PlayerID);
         }
         players.put(PlayerID, player);
     }
@@ -85,5 +89,6 @@ public class PlayerManager {
     public void unloadPlayer(UUID PlayerID) {
         savePlayer(PlayerID);
         players.remove(PlayerID);
+        SimpleCommands.LOGGER.info("Unloaded player: " + PlayerID);
     }
 }

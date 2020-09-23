@@ -1,5 +1,6 @@
 package com.datmodder.datsimplecommands.events;
 
+import com.datmodder.datsimplecommands.SimpleCommands;
 import com.datmodder.datsimplecommands.utils.PlayerManager;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
