@@ -47,17 +47,17 @@ public class PlayerManager {
         return players.get(PlayerID);
     }
 
-    // TODO: Finish
 
     public void savePlayer(UUID PlayerID, PlayerData Player) {
-        File playerFile = new File(FileHelper.getConfigSubDir(SimpleCommands.MOD_ID), PlayerID.toString() + ".json");
+        File playerFile = new File(FileHelper.getConfigSubDir(SimpleCommands.MOD_ID), "Players/" + PlayerID.toString() + ".json");
+        Gson gson = new Gson();
         try {
-            Gson gson = new Gson();
+            FileHelper.openFile(playerFile);
             BufferedWriter writer = new BufferedWriter(new FileWriter(playerFile));
             writer.write(gson.toJson(Player));
             writer.close();
         } catch (IOException e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -66,7 +66,7 @@ public class PlayerManager {
     }
 
     public void loadPlayer(UUID PlayerID) {
-        File playerFile = new File(FileHelper.getConfigSubDir(SimpleCommands.MOD_ID), PlayerID.toString() + ".json");
+        File playerFile = new File(FileHelper.getConfigSubDir(SimpleCommands.MOD_ID), "Players/" + PlayerID.toString() + ".json");
         PlayerData player;
         if (playerFile.exists()) {
             Gson gson = new Gson();
@@ -80,5 +80,10 @@ public class PlayerManager {
             player = new PlayerData();
         }
         players.put(PlayerID, player);
+    }
+
+    public void unloadPlayer(UUID PlayerID) {
+        savePlayer(PlayerID);
+        players.remove(PlayerID);
     }
 }
