@@ -1,6 +1,6 @@
 [
   {
-    "modid": "simplecommands",
+    "modid": "datsimplecommands",
     "name": "Simple Commands",
     "description": "A server side forge mod to add simple useful commands",
     "version": "${version}",
