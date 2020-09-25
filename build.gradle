@@ -12,7 +12,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 
 group = 'com.datmodder.datsimplecommands'
-version = '1.0.0'
+version = '1.0.1'
 archivesBaseName = 'simplecommands'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
