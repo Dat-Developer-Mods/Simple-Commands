@@ -4,7 +4,7 @@ import com.datmodder.datsimplecommands.SimpleCommands;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 
-@Config(modid = SimpleCommands.MOD_ID, name="SimpleCommands/SimpleCommands")
+@Config(modid = SimpleCommands.MOD_ID, name=SimpleCommands.MOD_ID + "/SimpleCommands")
 public class SimpleConfig {
     public static TeleportationConfig TELEPORTATION = new TeleportationConfig();
     public static InformationConfig INFORMATION = new InformationConfig();
