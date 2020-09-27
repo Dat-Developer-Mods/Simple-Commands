@@ -90,7 +90,7 @@ dependencies {
     // These dependencies get remapped to your current MCP mappings
     // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
 
-    implementation 'com.github.jtljac:datmoddingapi:1.2.1'
+    implementation 'com.github.jtljac:DatModdingAPI:1.2.1-ffs'
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // For more info...
