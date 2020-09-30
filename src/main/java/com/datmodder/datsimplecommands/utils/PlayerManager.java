@@ -34,8 +34,13 @@ public class PlayerManager {
     }
 
     public void updatePlayerBackLocation(UUID PlayerID, Location BackLocation) {
-        getPlayer(PlayerID).backLocation = BackLocation;
-        savePlayer(PlayerID);
+        PlayerData player = getPlayer(PlayerID);
+        if (player != null) {
+            player.backLocation = BackLocation;
+            savePlayer(PlayerID);
+        } else {
+            SimpleCommands.LOGGER.warn("Player with ID " + PlayerID + " Doesn't seem to exist, failed to set back location");
+        }
     }
 
     public void addPlayerHome(UUID PlayerID, String HomeName, Location HomeLocation) {
@@ -73,6 +78,10 @@ public class PlayerManager {
             Gson gson = new Gson();
             try (Reader jsonReader = new FileReader(playerFile)) {
                 player = gson.fromJson(jsonReader, PlayerData.class);
+                if (player == null) {
+                    player = new PlayerData();
+                    SimpleCommands.LOGGER.info("Loaded file was broken, Created new Player for " + PlayerID);
+                }
                 SimpleCommands.LOGGER.info("Loaded PlayerFile for " + PlayerID);
             } catch (IOException e) {
                 e.printStackTrace();
