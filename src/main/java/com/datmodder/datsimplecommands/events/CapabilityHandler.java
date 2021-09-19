@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = SimpleCommands.MOD_ID)
 public class CapabilityHandler {
-    public static final ResourceLocation RESPAWN_CAPABILITY = new ResourceLocation(SimpleCommands.MOD_ID, "command");
+    public static final ResourceLocation RESPAWN_CAPABILITY = new ResourceLocation(SimpleCommands.MOD_ID, "commands");
 
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Entity> event)
