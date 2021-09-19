@@ -1,8 +1,8 @@
 package com.datmodder.datsimplecommands.commands.Teleportation;
 
-import com.datmodder.datsimplecommands.utils.PlayerManager;
+import com.datmodder.datsimplecommands.capabilities.CommandsProvider;
+import com.datmodder.datsimplecommands.capabilities.ICommands;
 import com.demmodders.datmoddingapi.structures.Location;
-import com.demmodders.datmoddingapi.util.DatTeleporter;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -14,6 +14,7 @@ import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -23,7 +24,7 @@ public class DatTPCommand extends CommandBase
     @Override
     public String getName()
     {
-        return "dattp";
+        return "tp";
     }
 
     @Override
@@ -41,11 +42,10 @@ public class DatTPCommand extends CommandBase
     @Override
     public List<String> getAliases() {
         List<String> aliases = new ArrayList<>();
-        aliases.add("tp");
+        aliases.add("dattp");
         return aliases;
     }
 
-    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
@@ -77,14 +77,11 @@ public class DatTPCommand extends CommandBase
                 {
                     int j = 4096;
                     int k = i + 1;
-                    CoordinateArg commandbase$coordinatearg = parseCoordinate(entity.posX, args[i], true);
-                    CoordinateArg commandbase$coordinatearg1 = parseCoordinate(entity.posY, args[k++], -4096, 4096, false);
-                    CoordinateArg commandbase$coordinatearg2 = parseCoordinate(entity.posZ, args[k++], true);
-                    CoordinateArg commandbase$coordinatearg3 = parseCoordinate((double)entity.rotationYaw, args.length > k ? args[k++] : "~", false);
-                    CoordinateArg commandbase$coordinatearg4 = parseCoordinate((double)entity.rotationPitch, args.length > k ? args[k] : "~", false);
-                    if (entity instanceof EntityPlayerMP) {
-                        PlayerManager.getInstance().updatePlayerBackLocation(entity.getUniqueID(), new Location(entity.dimension, entity.posX, entity.posY, entity.posZ, ((EntityPlayerMP) entity).cameraPitch, ((EntityPlayerMP) entity).cameraYaw));
-                    }
+                    CommandBase.CoordinateArg commandbase$coordinatearg = parseCoordinate(entity.posX, args[i], true);
+                    CommandBase.CoordinateArg commandbase$coordinatearg1 = parseCoordinate(entity.posY, args[k++], -4096, 4096, false);
+                    CommandBase.CoordinateArg commandbase$coordinatearg2 = parseCoordinate(entity.posZ, args[k++], true);
+                    CommandBase.CoordinateArg commandbase$coordinatearg3 = parseCoordinate((double)entity.rotationYaw, args.length > k ? args[k++] : "~", false);
+                    CommandBase.CoordinateArg commandbase$coordinatearg4 = parseCoordinate((double)entity.rotationPitch, args.length > k ? args[k] : "~", false);
                     teleportEntityToCoordinates(entity, commandbase$coordinatearg, commandbase$coordinatearg1, commandbase$coordinatearg2, commandbase$coordinatearg3, commandbase$coordinatearg4);
                     notifyCommandListener(sender, this, "commands.tp.success.coordinates", new Object[] {entity.getName(), commandbase$coordinatearg.getResult(), commandbase$coordinatearg1.getResult(), commandbase$coordinatearg2.getResult()});
                 }
@@ -92,34 +89,37 @@ public class DatTPCommand extends CommandBase
             else
             {
                 Entity entity1 = getEntity(server, sender, args[args.length - 1]);
-                entity.dismountRidingEntity();
 
-                if (entity instanceof EntityPlayerMP)
+                if (entity1.world != entity.world)
                 {
-                    PlayerManager.getInstance().updatePlayerBackLocation(entity.getUniqueID(), new Location(entity.dimension, entity.posX, entity.posY, entity.posZ, ((EntityPlayerMP) entity).rotationPitch, ((EntityPlayerMP) entity).rotationYaw));
-
-                    if (entity.dimension != entity1.dimension){
-                        ((EntityPlayerMP)entity).changeDimension(entity1.dimension, new DatTeleporter(new Location(entity1.dimension, entity1.posX, entity1.posY, entity1.posZ, entity1.rotationPitch, entity1.rotationYaw)));
-                    } else {
-                        ((EntityPlayerMP)entity).connection.setPlayerLocation(entity1.posX, entity1.posY, entity1.posZ, entity1.rotationYaw, entity1.rotationPitch);
-                    }
+                    throw new CommandException("commands.tp.notSameDimension", new Object[0]);
                 }
                 else
                 {
-                    if (entity1.world != entity.world)
+                    entity.dismountRidingEntity();
+
+                    if (entity instanceof EntityPlayerMP)
                     {
-                        throw new CommandException("commands.tp.notSameDimension", new Object[0]);
-                    } else {
+                        EntityPlayerMP teleportingEntity = (EntityPlayerMP) entity;
+
+                        ICommands commands = teleportingEntity.getCapability(CommandsProvider.COMMANDS_CAPABILITY, null);
+                        commands.setBackLocation(new Location(teleportingEntity.dimension, teleportingEntity.posX, teleportingEntity.posY, teleportingEntity.posZ, teleportingEntity.rotationPitch, teleportingEntity.rotationYaw));
+                        commands.setLastTeleport(System.currentTimeMillis());
+
+                        teleportingEntity.connection.setPlayerLocation(entity1.posX, entity1.posY, entity1.posZ, entity1.rotationYaw, entity1.rotationPitch);
+                    }
+                    else
+                    {
                         entity.setLocationAndAngles(entity1.posX, entity1.posY, entity1.posZ, entity1.rotationYaw, entity1.rotationPitch);
                     }
-                }
 
-                notifyCommandListener(sender, this, "commands.tp.success", new Object[] {entity.getName(), entity1.getName()});
+                    notifyCommandListener(sender, this, "commands.tp.success", new Object[] {entity.getName(), entity1.getName()});
+                }
             }
         }
     }
 
-    private static void teleportEntityToCoordinates(Entity teleportingEntity, CoordinateArg argX, CoordinateArg argY, CoordinateArg argZ, CoordinateArg argYaw, CoordinateArg argPitch)
+    private static void teleportEntityToCoordinates(Entity teleportingEntity, CommandBase.CoordinateArg argX, CommandBase.CoordinateArg argY, CommandBase.CoordinateArg argZ, CommandBase.CoordinateArg argYaw, CommandBase.CoordinateArg argPitch)
     {
         if (teleportingEntity instanceof EntityPlayerMP)
         {
@@ -164,6 +164,10 @@ public class DatTPCommand extends CommandBase
                 f1 = MathHelper.wrapDegrees(f1);
             }
 
+            ICommands commands = teleportingEntity.getCapability(CommandsProvider.COMMANDS_CAPABILITY, null);
+            commands.setBackLocation(new Location(teleportingEntity.dimension, teleportingEntity.posX, teleportingEntity.posY, teleportingEntity.posZ, teleportingEntity.rotationPitch, teleportingEntity.rotationYaw));
+            commands.setLastTeleport(System.currentTimeMillis());
+
             teleportingEntity.dismountRidingEntity();
             ((EntityPlayerMP)teleportingEntity).connection.setPlayerLocation(argX.getAmount(), argY.getAmount(), argZ.getAmount(), f, f1, set);
             teleportingEntity.setRotationYawHead(f);
@@ -184,7 +188,6 @@ public class DatTPCommand extends CommandBase
         }
     }
 
-    @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
         return args.length != 1 && args.length != 2 ? Collections.emptyList() : getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());

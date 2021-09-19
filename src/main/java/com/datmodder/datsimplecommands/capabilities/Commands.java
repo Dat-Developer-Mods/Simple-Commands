@@ -71,4 +71,12 @@ public class Commands implements ICommands {
     public void setLastTeleport(long lastTeleport) {
         this.lastTeleport = lastTeleport;
     }
+
+    @Override
+    public void set(ICommands commands) {
+        setHomeLocations(commands.getHomeLocations());
+        setLastTeleport(commands.getLastTeleport());
+        setBackLocation(commands.getBackLocation());
+        setTpaRequests(commands.getTpaRequests());
+    }
 }

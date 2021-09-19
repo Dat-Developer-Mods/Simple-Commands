@@ -1,14 +1,13 @@
 package com.datmodder.datsimplecommands.commands.Teleportation;
 
+import com.datmodder.datsimplecommands.capabilities.CommandsProvider;
+import com.datmodder.datsimplecommands.capabilities.ICommands;
 import com.datmodder.datsimplecommands.delayedevents.teleportation.TeleportRequest;
-import com.datmodder.datsimplecommands.utils.PlayerManager;
 import com.datmodder.datsimplecommands.utils.SimpleConfig;
 import com.datmodder.datsimplecommands.utils.enums.TPDirection;
-import com.datmodder.datsimplecommands.utils.structures.PlayerData;
+import com.demmodders.datmoddingapi.commands.DatCommandBase;
 import com.demmodders.datmoddingapi.delayedexecution.DelayHandler;
 import com.demmodders.datmoddingapi.util.DemConstants;
-import com.demmodders.datmoddingapi.util.Permissions;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class TPACommand extends CommandBase {
+public class TPACommand extends DatCommandBase {
     @Override
     public String getName() {
         return "dattpa";
@@ -36,49 +35,41 @@ public class TPACommand extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        String message = "";
-        if (sender instanceof EntityPlayerMP) {
-            if (Permissions.checkPermission(sender, "datsimplecommands.teleportation.tpa", getRequiredPermissionLevel())) {
-                if (args.length > 0) {
-                    UUID senderID = ((EntityPlayerMP) sender).getUniqueID();
-                    EntityPlayerMP otherPlayerEntity = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(args[0]);
-
-                    if (otherPlayerEntity != null){
-                        PlayerData otherPlayer = PlayerManager.getInstance().getPlayer(otherPlayerEntity.getUniqueID());
-                        if (!otherPlayer.tpaRequests.containsKey(senderID)){
-                            otherPlayer.tpaRequests.put(senderID, TPDirection.TOASKEE);
-                            otherPlayerEntity.sendMessage(new TextComponentString(DemConstants.TextColour.INFO + "You have recieved a tpa request from " + sender.getName() + ". Accept it with " + DemConstants.TextColour.COMMAND + "/tpaccept " + DemConstants.TextColour.INFO + "or deny it with " + DemConstants.TextColour.COMMAND + "/tpdeny"));
-                            DelayHandler.addEvent(new TeleportRequest(SimpleConfig.TELEPORTATION.tpaTimeout, otherPlayer, senderID));
-                            message = DemConstants.TextColour.INFO + "Teleport request sent";
-                        } else {
-                            message = DemConstants.TextColour.ERROR + "That player already has a teleport request from you";
-                        }
-                    } else {
-                        message = DemConstants.TextColour.ERROR + "Unknown player";
-                    }
-                } else {
-                    message = DemConstants.TextColour.ERROR + "Bad arguments, see usage: " + getUsage(sender);
-                }
-            } else {
-                message = DemConstants.TextColour.ERROR + "You don't have permission to do that";
-            }
-        } else {
-            message = DemConstants.TextColour.ERROR + "You must be a player to use this command";
+        if (!(sender instanceof EntityPlayerMP)) {
+           sendError(sender, "You must be a player to use this command");
+            return;
         }
 
-        sender.sendMessage(new TextComponentString(message));
+        if (args.length <= 0) {
+            sendError(sender, "Bad arguments, see usage: " + getUsage(sender));
+            return;
+        }
+
+        UUID senderID = ((EntityPlayerMP) sender).getUniqueID();
+        EntityPlayerMP otherPlayerEntity = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(args[0]);
+
+        if (otherPlayerEntity == null) {
+            sendError(sender, "Unknown player");
+            return;
+        }
+
+        ICommands otherCommands = otherPlayerEntity.getCapability(CommandsProvider.COMMANDS_CAPABILITY, null);
+
+        if (otherCommands.getTpaRequests().containsKey(senderID)) {
+            sendError(sender, "That player already has a teleport request from you");
+            return;
+        }
+
+        otherCommands.putTpaRequest(senderID, TPDirection.TOASKEE);
+        sendMessage(otherPlayerEntity, new TextComponentString(DemConstants.TextColour.INFO + "You have received a tpa request from " + sender.getName() + ". Accept it with " + DemConstants.TextColour.COMMAND + "/tpaccept " + DemConstants.TextColour.INFO + "or deny it with " + DemConstants.TextColour.COMMAND + "/tpdeny"));
+        DelayHandler.addEvent(new TeleportRequest(SimpleConfig.TELEPORTATION.tpaTimeout, otherPlayerEntity, senderID));
+        sendInfo(sender, "Teleport request sent");
     }
 
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
     }
-
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
-    }
-
     @Override
     public List<String> getAliases() {
         List<String> aliases = new ArrayList<>();
@@ -96,5 +87,10 @@ public class TPACommand extends CommandBase {
             possibilities = super.getTabCompletions(server, sender, args, targetPos);
         }
         return getListOfStringsMatchingLastWord(args, possibilities);
+    }
+
+    @Override
+    protected String getPermissionNode() {
+        return "datsimplecommands.teleportation.tpa";
     }
 }

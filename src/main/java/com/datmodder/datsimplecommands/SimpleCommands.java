@@ -1,6 +1,10 @@
 package com.datmodder.datsimplecommands;
 
+import com.datmodder.datsimplecommands.capabilities.Commands;
+import com.datmodder.datsimplecommands.capabilities.CommandsStorage;
+import com.datmodder.datsimplecommands.capabilities.ICommands;
 import com.datmodder.datsimplecommands.commands.CommandRegister;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -15,7 +19,7 @@ import org.apache.logging.log4j.Logger;
         version = SimpleCommands.VERSION,
         acceptableRemoteVersions = "*",
         serverSideOnly = true,
-        dependencies = "required-after:datmoddingapi@[1.2.1,)"
+        dependencies = "required-after:datmoddingapi@[1.3.0,)"
 )
 public class SimpleCommands {
 
@@ -37,18 +41,13 @@ public class SimpleCommands {
      */
     @Mod.EventHandler
     public void preinit(FMLPreInitializationEvent event) {
-
+        CapabilityManager.INSTANCE.register(ICommands.class, new CommandsStorage(), Commands::new);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         // Register permissions
         CommandRegister.registerPermissions();
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-
     }
 
     @Mod.EventHandler
