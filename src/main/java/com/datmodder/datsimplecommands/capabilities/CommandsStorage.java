@@ -25,7 +25,9 @@ public class CommandsStorage implements Capability.IStorage<ICommands> {
 
         tag.setTag("homeMap", homeMap);
 
-        tag.setTag("lastLocation", getLocationAsNBT(instance.getBackLocation()));
+        if (instance.getBackLocation() != null) {
+            tag.setTag("lastLocation", getLocationAsNBT(instance.getBackLocation()));
+        }
 
         tag.setLong("lastTeleport", instance.getLastTeleport());
 
@@ -41,7 +43,6 @@ public class CommandsStorage implements Capability.IStorage<ICommands> {
 
     private NBTTagCompound getLocationAsNBT(Location loc) {
         NBTTagCompound homeLoc = new NBTTagCompound();
-
         homeLoc.setDouble("x", loc.x);
         homeLoc.setDouble("y", loc.y);
         homeLoc.setDouble("z", loc.z);
@@ -52,6 +53,9 @@ public class CommandsStorage implements Capability.IStorage<ICommands> {
     }
 
     private Location getLocationFromNBT(NBTTagCompound tag) {
+        if (tag == null || tag.isEmpty()) {
+            return null;
+        }
         return new Location(tag.getInteger("dim"), tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z"), tag.getFloat("pitch"), tag.getFloat("yaw"));
     }
 
